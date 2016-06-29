@@ -124,12 +124,12 @@ iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAABE
   				     '				$("#slider").slider({ value: 2, min: 1, max: 8, step: 1,\n' +
   				     '					slide: function(event, ui) { \n' +
                                      '                                                $("#sliderVal").val(ui.value);\n' +
-                		     '                                                $("img").css("width", (98/$("#sliderVal").val()).toFixed(3) + "%");\n'  +  // 98 to have some space
+                		     '                                                $("img").css("width", (95/$("#sliderVal").val()).toFixed(3) + "%");\n'  +  // 95% to have some room 
 				     '                                                $("#sortable").sortable("refresh");\n' +		// width have changed
                 		     '                                         }\n' +
   				     '				});\n' +
                                      '                          $("#slider").prop("title", "Number of columns");\n' +
-                		     '                          $("img").css("width", "50%");\n'  +
+                		     '                          $("img").css("width", "47.5%");\n'  +					// 50*0.95 to have some room left
 				     '			});\n' +
 				     '	})\n' +
 				     '});\n';
