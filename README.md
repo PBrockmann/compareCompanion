@@ -17,10 +17,10 @@ Comparison window with selected images
 ![Comparison window](compareCompanion_02.png)
 
 Only 2 lines to be added.
-<pre>
+```HTML
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js"></script>
 <script type="text/javascript" src="https://raw.githubusercontent.com/PBrockmann/selectImage/master/compareImages.js"></script>
-</pre>
+```
 
 Note, that the code is set to work with the src attribute of img tag but there are already 
 3 lines prepared to work with the href attribute of parent anchor of any images of your 
