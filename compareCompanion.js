@@ -86,7 +86,7 @@ iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAABE
     		link.href = "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css"; 
     		newWindow.document.getElementsByTagName("head")[0].appendChild(link);
 
-                var contentStyle = 'img { float: left; width: 50%; }\n';
+                var contentStyle = 'img { float: left; }\n';
                 var s = newWindow.document.createElement("style");
                 s.type = "text/css";
                 s.appendChild(document.createTextNode(contentStyle));
@@ -129,6 +129,7 @@ iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAABE
                 		     '                                         }\n' +
   				     '				});\n' +
                                      '                          $("#slider").prop("title", "Number of columns");\n' +
+                		     '                          $("img").css("width", "50%");\n'  +
 				     '			});\n' +
 				     '	})\n' +
 				     '});\n';

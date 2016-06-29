@@ -20,9 +20,7 @@ html page.
 
 ![]()
 
-#=============================================
-2 working methods: 
-
+2 working methods explored:
 - callback to wait load of jquery and jquery.ui
 - callback to wait load of requirejs with dependancies on jquery and jquery.ui
 
