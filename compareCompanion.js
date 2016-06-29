@@ -124,7 +124,7 @@ iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAABE
   				     '				$("#slider").slider({ value: 2, min: 1, max: 8, step: 1,\n' +
   				     '					slide: function(event, ui) { \n' +
                                      '                                                $("#sliderVal").val(ui.value);\n' +
-                		     '                                                $("img").css("width", (100/$("#sliderVal").val()).toFixed(3) + "%");\n'  +
+                		     '                                                $("img").css("width", (98/$("#sliderVal").val()).toFixed(3) + "%");\n'  +  // 98 to have some space
 				     '                                                $("#sortable").sortable("refresh");\n' +		// width have changed
                 		     '                                         }\n' +
   				     '				});\n' +
