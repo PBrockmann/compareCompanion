@@ -10,8 +10,8 @@ From this new window called "My images comparison", you have again at the bottom
 right a slider to choose the number of columns of the display (from 1 to 8).
 By moving this slider, you will instantaneously change the layout of images.
 
-![Selection of images](compareCompanion_01.png =300x)
-![Comparison window](compareCompanion_02.png =300x)
+![Selection of images](compareCompanion_01.png)
+![Comparison window](compareCompanion_02.png)
 
 Only 2 lines to be added.
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js"></script>
