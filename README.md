@@ -22,6 +22,8 @@ Only 2 lines to be added.
 <script type="text/javascript" src="https://raw.githubusercontent.com/PBrockmann/selectImage/master/compareImages.js"></script>
 ```
 
+Test from http://htmlpreview.github.io/?https://raw.githubusercontent.com/PBrockmann/compareCompanion/master/atlas.html
+
 Note, that the code is set to work with the src attribute of img tag but there are already 
 3 lines prepared to work with the href attribute of parent anchor of any images of your 
 html page.
