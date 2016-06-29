@@ -1,0 +1,425 @@
+
+    <?xml version="1.0" encoding="iso-8859-1"?> 
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">    
+    <head>
+    <title>[ Multi-simulations LMDZ CliMAF Atlas ]</title>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+// ==============================================================================================
+// Added by Patrick.Brockmann@lsce.ipsl.fr
+// ==============================================================================================
+
+$(document).ready(function() {
+
+  //$('img').draggable({helper : 'clone' });
+
+  $('img').bind('keydown', function(event) {
+        //console.log(event.keyCode);
+        switch(event.keyCode) {
+                case 83:                                        // 's' for select
+                        if (! $(this).prop("selected")) {
+                                $(this).prop("selected", true).css("border", "3px solid black");
+                        } else {
+                                $(this).prop("selected", false).css("border", "none");
+                        }
+                        if ($('img:selected').length == 0) {
+				$('#comparisonButton').prop("disabled", true).css("opacity", 0.3).css("cursor", "default");
+			} else {
+				$('#comparisonButton').prop("disabled", false).css("opacity", 1.0).css("cursor", "pointer");
+			}
+                        break;
+                case 67:                                        // 'c' for clear 
+                        $('img').prop("selected", false).css("border", "none");       
+			$('#comparisonButton').prop("disabled", true).css("opacity", 0.3).css("cursor", "default");
+                        break;
+		// http://www.sitepoint.com/forums/showthread.php?513905-Can-t-call-window-open()-from-a-keyPress-event
+                //case 88:                                        // 'x' to open a new windon with selected images
+                //        break;
+        }
+  });
+
+  $('img').bind('mouseover', function() {               // set the focus when mouseover to capture key event
+        this.focus();
+  });
+  $('img').prop("tabindex", -1);                         // to enable the focus
+  $('img').prop("selected", false);                     // by default none selected
+
+  $('a').prop("target", "_blank");                      // to correct all anchors
+  $('td').css("display", "inline");                     // to display without horiz. scroll bar
+
+  var r= $('<input type="image" id="comparisonButton" disabled=true style="opacity: 0.3; cursor: default; position: fixed; bottom: 20px; right: 30px;"/>');
+  $("body").append(r);
+
+  // compare png image from https://www.iconfinder.com/icons/175463/compare_icon#size=128 
+  // converted to base64 with https://www.base64-image.de/
+  $('#comparisonButton').prop('src', 'data:image/png;base64,\
+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');
+
+  $('#comparisonButton').bind('click', function() {
+        var contentHTML = '';
+        $('img:selected').each(function(i, el) {
+                //console.log($(el).prop("src"));
+                contentHTML = contentHTML + '     <img src="' + $(el).prop("src") + '">\n';
+        })
+        if (contentHTML != '') {
+                var newWindow = window.open("", "myAtlasSelection");
+        	newWindow.document.title = "My atlas selection";
+
+      		var s = newWindow.document.createElement("script");
+      		s.type = "text/javascript";
+      		s.src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js";
+      		newWindow.document.getElementsByTagName("HEAD")[0].appendChild(s);
+
+      		var s = newWindow.document.createElement("script");
+      		s.type = "text/javascript";
+      		s.src = "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js";
+      		newWindow.document.getElementsByTagName("HEAD")[0].appendChild(s);
+
+                var contentStyle = 'img {\n' +
+                           '    float: left;\n' +
+                           '    width: 50%;\n' +
+                           '}\n'; 
+      		var s = newWindow.document.createElement("style");
+      		s.type = "text/css";
+		s.appendChild(document.createTextNode(contentStyle));
+      		newWindow.document.getElementsByTagName("HEAD")[0].appendChild(s);
+
+		// http://stackoverflow.com/questions/10113366/load-jquery-with-javascript-and-use-jquery 
+		// http://stackoverflow.com/questions/7486309/how-to-make-script-execution-wait-until-jquery-is-loaded
+                var contentScript =  'function checkReady(callback) {\n' + 
+        	                     '	if (window.jQuery && window.jQuery.ui) {\n' +
+                                     '		callback();\n' +
+        	                     '	} else {\n' +
+            	                     '		window.setTimeout(function() { checkReady(callback); }, 100);\n' +
+        	                     '	}\n' +
+    		                     '};\n' +
+		                     'checkReady(function() {\n' +
+                                     '	$(document).ready(function() {\n' +
+                                     '		$("#sortable").sortable();\n' +
+                                     '	});\n' +
+                                     '})\n';
+
+      		var s = newWindow.document.createElement("script");
+      		s.type = "text/javascript";
+		//console.log(contentScript);
+		s.appendChild(document.createTextNode(contentScript));
+      		newWindow.document.getElementsByTagName("HEAD")[0].appendChild(s);
+
+		contentHTML = '<div id="sortable">\n' + contentHTML + '</div>\n'; 
+		//console.log(contentHTML);
+        	newWindow.document.body.innerHTML = contentHTML;
+        	newWindow.focus();
+        }
+  });
+
+});
+
+// ==============================================================================================
+</script>
+
+<style type="text/css" media=screen>
+body {
+background-color: white;
+font-family:"Trebuchet MS",Verdana,Geneva,Arial,Helvetica,sans-serif;
+margin:30px 70px 70px 0px;
+}
+
+#menu ul {
+font-family:verdana, sans-serif;
+padding:10;
+margin-top : 5px;
+margin-bottom : 5px;
+list-style-type:none;
+text-align:center;
+}
+
+#menu li {
+font-size:100%;
+float:right;
+margin:auto;
+padding:10;
+background-color:AntiqueWhite;
+}
+#menu li a {
+display:block;
+width:80px;
+color:brown;
+text-decoration:none;
+padding:2px;
+}
+
+#menu {
+height:80%;
+width:80%;
+}
+
+.bloc1 {
+background-color: white;
+height: 100%;
+width: 15%;
+float: left;
+}
+.bloc2 {
+background-color: white;
+height: 100%;
+width: 87%;
+float: left;
+margin-left: -40px;
+}
+
+h1 {
+font-family:verdana, sans-serif;
+font-size:150%;
+color:black;
+background-color:transparent;
+text-align:center;
+}
+
+h2 {
+font-family:verdana, sans-serif;
+font-size:140%;
+color:black;
+background-color:honeydew;
+text-align:left;
+}
+h2.centre {text-align: center}
+
+h3 {
+font-family:verdana, sans-serif;
+font-size:110%;
+color:black;
+background-color:transparent;
+text-align:left;
+}
+h3.centre {text-align: center}
+
+h4 {
+font-family:verdana, sans-serif;
+font-size:100%;
+color:brown;
+background-color:AntiqueWhite;
+text-align:left;
+}
+h4.centre {text-align: center}
+
+h5 {
+font-family:verdana, sans-serif;
+font-size:90%;
+color:SteelBlue;
+background-color:transparent;
+text-align:left;
+}
+h5.centre {text-align: center}
+
+h6 {
+font-family:verdana, sans-serif;
+font-size:90%;
+color:DarkGoldenrod;
+background-color:transparent;
+text-align:left;
+}
+h6.centre {text-align: center}
+
+h7 {
+font-family:verdana, sans-serif;
+font-size:90%;
+color:deeppink;
+background-color:transparent;
+text-align:left;   
+}
+h7.centre {text-align: center}
+
+
+p {
+font-family:verdana, sans-serif;
+font-size:80%;
+color:black;
+background-color:transparent;
+text-align:left;
+margin-left:0px;
+margin-right:0px;
+}
+p.centre {text-align: center}
+p.centre {font-size: 100%}
+
+li {
+font-family:verdana, sans-serif;
+font-size:85%;
+color:black;
+background-color:transparent;
+text-align:left;
+margin-left:10px;
+margin-right:10px;
+}
+
+br {
+font-family:verdana, sans-serif;
+font-size:100%;
+color:blue;
+background-color:transparent;
+text-align:left;
+margin-left:10px;
+margin-right:10px;
+}
+
+a:link {
+font-family:verdana, sans-serif;
+font-size:90%;
+color:green;
+background-color:transparent;
+text-decoration:underline;
+}
+
+a:visited {
+font-family:verdana, sans-serif;
+font-size:90%;
+color:#8b008b;
+background-color:transparent;
+text-decoration:underline;
+}
+
+a:hover {
+font-family:verdana, sans-serif;
+font-size:100%;
+color:black;
+background-color:transparent;
+text-decoration:underline;
+}
+
+table {
+border-color:transparent;
+border-style:solid;
+border-width:1px;
+}
+
+td {
+font-family:verdana, sans-serif;
+font-size:80%;
+color:black;
+text-align:left;
+background-color:transparent;
+border-color:transparent;
+border-style:solid;
+border-width:1px;
+}
+
+th {
+font-size:90%;
+}
+
+a.info {
+position:relative;
+z-index:24;
+color:#000;
+text-decoration:underline;
+}              
+
+a.info span{
+display: none;
+}
+
+a.info:hover{
+z-index:25;
+background-color:#FFF
+}
+
+a.info:hover span{
+display:block;
+position:absolute;
+white-space: nowrap;
+bottom:2em;left:4em;
+border:1px solid #000; 
+background-color:#FFF;
+color:#000;
+text-align:justify;
+font-weight:none;
+padding:5px;
+overflow:auto;
+}
+</style>
+        </head>
+        <body>
+        <h1>Multi-simulations LMDZ CliMAF Atlas</h1>
+        <hr/> <!--- this draws a line --->
+        
+<h4><a name="None"></a>Atmospheric climatological biases ANM GLOB</h4>
+<TABLE CELLSPACING=5>
+ <TR>
+ <TH ALIGN=LEFT>  </TH> 
+</TR> 
+ <TR>
+ <TH ALIGN=LEFT> <li>VARIABLE</li> </TH> 
+<TD ALIGN=RIGHT></TD>
+<TD ALIGN=RIGHT></TD>
+<TD ALIGN=RIGHT></TD>
+ </TR>
+ <TR>
+ <TH ALIGN=LEFT> <li>2M Temperature (tas)</li> </TH> 
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/40158/8ad32/c035c/48bd2/00e00/d2f7d/cbb5c/f100b/38377/e6811/6c780/9.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/40158/8ad32/c035c/48bd2/00e00/d2f7d/cbb5c/f100b/38377/e6811/6c780/9.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/0296f/969f3/8e0b1/10de6/c8647/cb212/00f14/a8da3/e3f33/6e552/2fffb/4.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/0296f/969f3/8e0b1/10de6/c8647/cb212/00f14/a8da3/e3f33/6e552/2fffb/4.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/00f3c/898bc/7c682/e0893/f4be9/7e986/b33a8/129b0/1e5d5/5fc0e/7739c/7.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/00f3c/898bc/7c682/e0893/f4be9/7e986/b33a8/129b0/1e5d5/5fc0e/7739c/7.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/c8d8f/b773a/bfa44/af198/e76fe/36ac2/95add/fb048/5c808/cd893/7e0f2/7.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/c8d8f/b773a/bfa44/af198/e76fe/36ac2/95add/fb048/5c808/cd893/7e0f2/7.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/3e67f/373e2/c4258/5dbf6/30fcf/025e7/f3fee/df226/d5db7/77962/34246/0.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/3e67f/373e2/c4258/5dbf6/30fcf/025e7/f3fee/df226/d5db7/77962/34246/0.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/54039/3f653/16dc9/f4238/d8933/34651/0e991/4f2f8/7ed57/dbfe1/c4a6e/d.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/54039/3f653/16dc9/f4238/d8933/34651/0e991/4f2f8/7ed57/dbfe1/c4a6e/d.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/6aa49/a2614/d60e5/2fbb5/23536/22b9a/5cc89/c0d45/fbf75/7331b/dffd6/5.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/6aa49/a2614/d60e5/2fbb5/23536/22b9a/5cc89/c0d45/fbf75/7331b/dffd6/5.png"></a></TD>
+ <TR>
+ <TH ALIGN=LEFT> <li>Precipitation (pr)</li> </TH> 
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/03d2f/9df78/1f723/e4e24/a47ee/c6813/3499a/929c1/d0213/c5c8f/7d06d/e.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/03d2f/9df78/1f723/e4e24/a47ee/c6813/3499a/929c1/d0213/c5c8f/7d06d/e.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/e19d8/f1950/fd6d9/e0234/c0fea/03c7c/20b6c/de8b3/1dca0/c8a6c/22f5a/1.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/e19d8/f1950/fd6d9/e0234/c0fea/03c7c/20b6c/de8b3/1dca0/c8a6c/22f5a/1.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/e8239/f09fa/f353d/b516a/4f0a2/216b6/6055b/b0cbc/3c04d/bdc93/5e695/2.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/e8239/f09fa/f353d/b516a/4f0a2/216b6/6055b/b0cbc/3c04d/bdc93/5e695/2.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/c3b34/d0287/68032/ae085/7be16/a3963/1f8a6/af26d/2b0ab/e9803/c93c6/f.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/c3b34/d0287/68032/ae085/7be16/a3963/1f8a6/af26d/2b0ab/e9803/c93c6/f.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/5734c/e00e1/571d5/d4caa/d15a5/23e6d/f1d89/a19c7/ce0d0/71fb8/929de/7.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/5734c/e00e1/571d5/d4caa/d15a5/23e6d/f1d89/a19c7/ce0d0/71fb8/929de/7.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/09266/1c99e/25b6a/08d0c/ca562/34f8a/8e883/3571d/38ca4/31d0b/0e5e0/d.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/09266/1c99e/25b6a/08d0c/ca562/34f8a/8e883/3571d/38ca4/31d0b/0e5e0/d.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/e4808/ea209/a7fd4/8eb72/788e9/4785a/9ad1a/41fc1/e4f24/73658/885fd/3.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/e4808/ea209/a7fd4/8eb72/788e9/4785a/9ad1a/41fc1/e4f24/73658/885fd/3.png"></a></TD>
+ <TR>
+ <TH ALIGN=LEFT> <li>Sea Level Pressure (psl)</li> </TH> 
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/d07e5/40bf6/21e59/15a87/40fd4/c70ce/89075/de316/abd2d/74681/37a1a/4.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/d07e5/40bf6/21e59/15a87/40fd4/c70ce/89075/de316/abd2d/74681/37a1a/4.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/58792/10fee/abc9e/321f5/112ce/44ff3/f72ec/4a97b/96ca3/b66ef/79613/4.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/58792/10fee/abc9e/321f5/112ce/44ff3/f72ec/4a97b/96ca3/b66ef/79613/4.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/de62a/3fb93/799be/b0927/779ef/26493/1240a/06efe/a17be/52c5a/a736e/3.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/de62a/3fb93/799be/b0927/779ef/26493/1240a/06efe/a17be/52c5a/a736e/3.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/6fcb9/eb041/cb69b/3582b/f6db0/51a5e/8da01/80e4d/13492/c829a/9445f/c.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/6fcb9/eb041/cb69b/3582b/f6db0/51a5e/8da01/80e4d/13492/c829a/9445f/c.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/fc19f/42522/71bb7/713be/cae80/4c1d8/d3995/4fa48/2784f/52283/40adb/2.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/fc19f/42522/71bb7/713be/cae80/4c1d8/d3995/4fa48/2784f/52283/40adb/2.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/8e7f6/9ac13/a3f6c/b8997/81f6d/f5042/b6b1f/5f56f/cf9e6/5b5f4/e285e/a.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/8e7f6/9ac13/a3f6c/b8997/81f6d/f5042/b6b1f/5f56f/cf9e6/5b5f4/e285e/a.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/41caf/47536/79f10/8e602/ed02f/ca12d/acb92/a150b/1d4ff/95a7c/c3992/9.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/41caf/47536/79f10/8e602/ed02f/ca12d/acb92/a150b/1d4ff/95a7c/c3992/9.png"></a></TD>
+</TABLE>
+<h4><a name="None"></a>Model-Model climatological differences ANM GLOB vs CM603T01V01</h4>
+<TABLE CELLSPACING=5>
+ <TR>
+ <TH ALIGN=LEFT>  </TH> 
+</TR> 
+ <TR>
+ <TH ALIGN=LEFT> <li>VARIABLE</li> </TH> 
+<TD ALIGN=RIGHT></TD>
+<TD ALIGN=RIGHT></TD>
+<TD ALIGN=RIGHT></TD>
+ </TR>
+ <TR>
+ <TH ALIGN=LEFT> <li>2M Temperature (tas)</li> </TH> 
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/40158/8ad32/c035c/48bd2/00e00/d2f7d/cbb5c/f100b/38377/e6811/6c780/9.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/40158/8ad32/c035c/48bd2/00e00/d2f7d/cbb5c/f100b/38377/e6811/6c780/9.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/00f3c/898bc/7c682/e0893/f4be9/7e986/b33a8/129b0/1e5d5/5fc0e/7739c/7.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/00f3c/898bc/7c682/e0893/f4be9/7e986/b33a8/129b0/1e5d5/5fc0e/7739c/7.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/3c53e/41326/3fc35/2322d/d35db/108a7/f0157/ab8bf/9be84/f828b/7d137/2.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/3c53e/41326/3fc35/2322d/d35db/108a7/f0157/ab8bf/9be84/f828b/7d137/2.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/880cb/ee5ce/f62e0/f4a60/b9c58/a3d85/c90d0/71509/d7afa/bcb3f/87b32/5.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/880cb/ee5ce/f62e0/f4a60/b9c58/a3d85/c90d0/71509/d7afa/bcb3f/87b32/5.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/cd9fd/287fd/8d2d2/c824f/c0e1c/9cb82/88392/f482c/52d3d/e0a56/805f8/9.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/cd9fd/287fd/8d2d2/c824f/c0e1c/9cb82/88392/f482c/52d3d/e0a56/805f8/9.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/13232/e199d/d4c57/e0546/bb648/e0a65/f7d56/82272/83455/c37f3/7bd86/6.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/13232/e199d/d4c57/e0546/bb648/e0a65/f7d56/82272/83455/c37f3/7bd86/6.png"></a></TD>
+ <TR>
+ <TH ALIGN=LEFT> <li>Precipitation (pr)</li> </TH> 
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/03d2f/9df78/1f723/e4e24/a47ee/c6813/3499a/929c1/d0213/c5c8f/7d06d/e.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/03d2f/9df78/1f723/e4e24/a47ee/c6813/3499a/929c1/d0213/c5c8f/7d06d/e.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/e8239/f09fa/f353d/b516a/4f0a2/216b6/6055b/b0cbc/3c04d/bdc93/5e695/2.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/e8239/f09fa/f353d/b516a/4f0a2/216b6/6055b/b0cbc/3c04d/bdc93/5e695/2.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/c57f2/18cc7/0301b/81c02/6fe03/13df5/8db77/4ebc6/3ae9a/222a0/d1eb4/0.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/c57f2/18cc7/0301b/81c02/6fe03/13df5/8db77/4ebc6/3ae9a/222a0/d1eb4/0.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/335c9/5f449/1d9a8/d32d6/eed77/7654c/c6625/7fdaa/23347/acc59/ed308/c.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/335c9/5f449/1d9a8/d32d6/eed77/7654c/c6625/7fdaa/23347/acc59/ed308/c.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/084db/bb9a1/8ecf1/251b2/8839b/4c05f/671b0/a9e03/eef3c/ff9e9/009d0/7.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/084db/bb9a1/8ecf1/251b2/8839b/4c05f/671b0/a9e03/eef3c/ff9e9/009d0/7.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/58900/9f7e0/1e068/f6e81/fe2fd/8f798/1adc9/074c7/78333/7bd1a/bc1b0/b.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/58900/9f7e0/1e068/f6e81/fe2fd/8f798/1adc9/074c7/78333/7bd1a/bc1b0/b.png"></a></TD>
+ <TR>
+ <TH ALIGN=LEFT> <li>Sea Level Pressure (psl)</li> </TH> 
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/d07e5/40bf6/21e59/15a87/40fd4/c70ce/89075/de316/abd2d/74681/37a1a/4.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/d07e5/40bf6/21e59/15a87/40fd4/c70ce/89075/de316/abd2d/74681/37a1a/4.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/de62a/3fb93/799be/b0927/779ef/26493/1240a/06efe/a17be/52c5a/a736e/3.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/de62a/3fb93/799be/b0927/779ef/26493/1240a/06efe/a17be/52c5a/a736e/3.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/76523/b61f8/6252b/ebb5d/a218e/0cd9b/bff75/616b7/44a0e/3135d/41076/2.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/76523/b61f8/6252b/ebb5d/a218e/0cd9b/bff75/616b7/44a0e/3135d/41076/2.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/e5489/41ef6/42b0c/71db9/18deb/49f54/fe455/07f60/25f05/9a784/15538/7.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/e5489/41ef6/42b0c/71db9/18deb/49f54/fe455/07f60/25f05/9a784/15538/7.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/2daf8/93de7/838b5/b0231/04eef/30cd2/3cb86/41896/13a53/b9a87/40f44/8.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/2daf8/93de7/838b5/b0231/04eef/30cd2/3cb86/41896/13a53/b9a87/40f44/8.png"></a></TD>
+<TD ALIGN=RIGHT><A HREF="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/dfd65/2ac01/3387b/a2229/1f62e/0c8ca/86f86/e3861/ede71/f4c59/eef0b/5.png"><IMG HEIGHT='175' WIDTH='300' SRC="https://vesg.ipsl.upmc.fr/thredds/fileServer/IPSLFS/fabric/atlas_LMDZ_test/dfd65/2ac01/3387b/a2229/1f62e/0c8ca/86f86/e3861/ede71/f4c59/eef0b/5.png"></a></TD>
+</TABLE>
+</body>

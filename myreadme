@@ -1,0 +1,13 @@
+
+#=============================================
+- Add control on the number of columns in the comparison window
+
+
+#=============================================
+Les 2 methodes fonctionnent: 
+
+- callback pour attendre le chargement de jquery et jquery.ui
+- callback pour attendre le chargement de requirejs qui
+va lui même attendre jquery et jquery.ui via le mechanisme de dépendance (require)
+
+
