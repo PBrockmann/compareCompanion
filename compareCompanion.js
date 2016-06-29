@@ -121,15 +121,25 @@ iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAABE
 				     '   require(["jquery", "jqueryui"], function($) {\n' +
 				     '     		$(document).ready(function() {\n' +
 				     '				$("#sortable").sortable();\n' +			// make sortable all elements from div
+                                     '                          var heights = $("img").map(function () { return $(this).prop("naturalHeight"); }).get();\n' +
+                                     '                          maxHeight = Math.max.apply(null, heights);\n' + 
+                                     '                          var widths = $("img").map(function () { return $(this).prop("naturalWidth"); }).get();\n' +
+                                     '                          maxWidth = Math.max.apply(null, widths);\n' + 
+                                   //'                          console.log(maxWidth, maxHeight);\n' +
   				     '				$("#slider").slider({ value: 2, min: 1, max: 8, step: 1,\n' +
   				     '					slide: function(event, ui) { \n' +
                                      '                                                $("#sliderVal").val(ui.value);\n' +
-                		     '                                                $("img").css("width", (90/$("#sliderVal").val()).toFixed(3) + "%");\n'  +  // 95% to have some room 
-				     '                                                $("#sortable").sortable("refresh");\n' +		// width have changed
+                		     '                                                $("img").css("width", (100/$("#sliderVal").val()).toFixed(3) + "%");\n'  +
+                		     						      // calculate the height from the rendered width prop to ratio of image h/w
+                		     '                                                newHeight = $("img").prop("width") * maxHeight/maxWidth;\n' +
+                		     '                                                $("img").css("height", newHeight.toFixed(3) + "px");\n'  +
                 		     '                                         }\n' +
   				     '				});\n' +
                                      '                          $("#slider").prop("title", "Number of columns");\n' +
-                		     '                          $("img").css("width", "45%");\n'  +					// 50*0.9 to have some room left
+                		     '                          $("img").css("width", "50%");\n'  +
+                		     '                          newHeight = $("img").prop("width") * maxHeight/maxWidth;\n' +
+                		     '                          $("img").css("height", newHeight.toFixed(3) + "px");\n'  +
+                		   //'                          $("img").css("border", "1px solid");\n' +
 				     '			});\n' +
 				     '	})\n' +
 				     '});\n';
