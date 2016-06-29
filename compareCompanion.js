@@ -77,8 +77,8 @@ iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAABE
 
         })
         if (contentHTML != '') {
-                var newWindow = window.open("", "myAtlasSelection");
-        	newWindow.document.title = "My atlas selection";
+                var newWindow = window.open("", "myImagesComparison");
+        	newWindow.document.title = "My images comparison";
 
 	        var link = document.createElement("link");
     		link.type = "text/css";
