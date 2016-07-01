@@ -19,7 +19,7 @@ Comparison window with selected images
 Only 2 lines to be added.
 ```HTML
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js"></script>
-<script type="text/javascript" src="https://raw.githubusercontent.com/PBrockmann/selectImage/master/compareImages.js"></script>
+<script type="text/javascript" src="https://raw.githubusercontent.com/PBrockmann/compareCompanion/master/compareImages.js"></script>
 ```
 
 Test from http://htmlpreview.github.io/?https://raw.githubusercontent.com/PBrockmann/compareCompanion/master/atlas.html
